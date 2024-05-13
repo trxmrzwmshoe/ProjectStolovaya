@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Первые блюда</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" href="{{ url_for ('static', filename='images/icons/MUIV.png')}}" alt="" class="head__logo" type="image/x-icon">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <img src="{{ url_for('static', filename='images/icons/logo.png') }}" alt="" class="header__logo"> 
+
+        <!-- ul - ненумерованный список ( unordered list )-->
+        <!-- li - пункт списка ( list item )-->
+
+            <nav class="header__nav">
+                <ul class="header__list">
+                    <li><a href="/index">ГЛАВНАЯ</a></li>
+                    <li><a href="#!">ВСЕ МЕНЮ</a></li>
+                    <li><a href="#!">ВЫПЕЧКА</a></li>
+                    <li><a class="active" href="/first-meal">ПЕРВЫЕ БЛЮДА</a></li>
+                    <li><a href="#!">САЛАТЫ</a></li>
+                    <li><a href="#!">ВТОРЫЕ БЛЮДА</a></li>
+                    <li><a href="#!">ДЕСЕРТЫ</a></li>
+                    <li><a href="#!">НАПИТКИ</a></li>
+                </ul>
+            </nav>
+
+            <a href="#!" class="btn btn-danger">Корзина</a> 
+            <a href="/sign-in" class="image-btn btn-danger"></a>
+        </div>
+    </header>
+    <main class="main">
+      <div class="container">
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+              {% for dish in about %}
+              <div class="col">
+                  <div class="card shadow-sm">
+                      <img src="{{ url_for('static', filename='images/' + dish.image)}}" alt="dish.name">
+                      <div class="card-body">
+                          <p class="my-0 font-weight-normal">{{ dish.title }}</p>
+                          <div class="d-flex justify-content-between align-items-center">
+                              <div class="btn-group">
+                                  <a href="/menu/{{ dish.id }}" class="btn btn-danger">Детальнее</a>
+                              </div>
+                              <small class="text-body-secondary">Цена: {{ dish.price }}</small>
+                          </div>
+                      </div>
+                  </div>
+              </div>               
+              {% endfor %}
+              
+          </div>
+      </div>
+  </main>
+    <footer class="container my-md-5 pt-md-5 border-top">
+        <div class="row">
+          <div class="col-12 col-md">
+            <img class="mb-2" src="{{ url_for ('static', filename='images/icons/MUIV.png')}}" alt="" width="24" height="19">
+            <small class="d-block mb-3 text-body-secondary">2024 © МУИВ. Все права защищены.</small>
+          </div>
+          <div class="col-6 col-md">
+            <h5>Контакты</h5>
+            <ul class="list-unstyled text-small">
+              <li class="mb-1"><a href="https://yandex.ru/maps/-/CDUOzQIO" rel="nofollow" class="footer_link_icon link_address">115432, Москва, 
+                <br>2-й Кожуховский проезд, 
+                <br>д. 12, стр. 1</a></li>
+
+            </ul>
+          </div>
+          <div class="col-6 col-md">
+            <h5>Часы работы</h5>
+            <ul class="list-unstyled text-small">
+                <span>
+                    <i>Пн-Чт.:</i>
+                     09:30-18:15
+                </span>
+                <span>
+                    <br><i>Пт.:</i> 09:30-17:00
+                </span>
+            </ul>
+          </div>
+        </div>
+      </footer>
+</body>
+</html>
