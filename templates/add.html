@@ -18,14 +18,12 @@
 
             <nav class="header__nav">
                 <ul class="header__list">
-                    <li><a href="/index">ГЛАВНАЯ</a></li>
-                    <li><a href="/menu">ВСЕ МЕНЮ</a></li>
-                    <li><a href="#!">ВЫПЕЧКА</a></li>
-                    <li><a href="/first-meal">ПЕРВЫЕ БЛЮДА</a></li>
-                    <li><a href="#!">САЛАТЫ</a></li>
-                    <li><a href="#!">ВТОРЫЕ БЛЮДА</a></li>
-                    <li><a href="#!">ДЕСЕРТЫ</a></li>
-                    <li><a href="#!">НАПИТКИ</a></li>
+                    <li><a href="/menu">Все меню</a></li>
+                    <li><a href="/category/bakery">ВЫПЕЧКА</a></li>
+                    <li><a href="/category/first-dishes">ПЕРВЫЕ БЛЮДА</a></li>
+                    <li><a href="/category/salads">САЛАТЫ</a></li>
+                    <li><a href="/category/second-dishes">ВТОРЫЕ БЛЮДА</a></li>
+                    <li><a href="/category/drinks">НАПИТКИ</a></li>
                 </ul>
             </nav>
 
@@ -38,20 +36,22 @@
         <div class="container">
             <h1>Добавление блюда</h1>
             <form method="post" enctype="multipart/form-data">
-                <input type="text" name="title" id="title" class="form-control" placeholder="Введите название"><br>
-                <label for="image">Image:</label>
-                <input type="file" id="image" name="image" accept="image/" required><br><br>
-                <textarea name="price" id="price" class="form-control" placeholder="Введите цену"></textarea><br>
-                <textarea name="text" id="text" class="form-control" placeholder="Введите состав"></textarea><br>
+                    <input type="text" name="title" id="title" class="form-control" placeholder="Введите название"><br>
+                    <label for="image">Image:</label>
+                    <input type="file" id="image" name="image" accept="image/" required><br><br>
+                    <textarea name="price" id="price" class="form-control" placeholder="Введите цену"></textarea><br>
+                    <textarea name="text" id="text" class="form-control" placeholder="Введите состав"></textarea><br>
+                    <textarea name="fats" id="fats" class="form-control" placeholder="Введите жиры"></textarea><br>
+                    <textarea name="proteins" id="proteins" class="form-control" placeholder="Введите белки"></textarea><br>
+                    <textarea name="carbs" id="carbs" class="form-control" placeholder="Введите углеводы"></textarea><br>
+                    <textarea name="calories" id="calories" class="form-control" placeholder="Введите Ккал"></textarea><br>
                 <label for="category">Категория: </label> 
                 <select id="category" name="category">
-                    <option value="Все меню">Все меню</option>
-                    <option value="Выпечка">Выпечка</option>
-                    <option value="Первые блюда">Первые блюда</option>
-                    <option value="Салаты">Салаты</option>
-                    <option value="Вторые блюда">Вторые блюда</option>
-                    <option value="Десерты">Десерты</option>
-                    <option value="Напитки">Напитки</option>
+                    <option value="bakery">Выпечка</option>
+                    <option value="first-dishes">Первые блюда</option>
+                    <option value="salads">Салаты</option>
+                    <option value="second-dishes">Вторые блюда</option>
+                    <option value="drinks">Напитки</option>
                 </select><br><br>
                 <input type="submit" class="btn btn-danger" value="Отправить">
             </form>

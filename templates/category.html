@@ -47,46 +47,17 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
                                     <a href="/menu/{{ el.id }}" class="btn btn-danger">Детальнее</a>
+                                    
                                 </div>
-                                <small class="text-body-secondary">Цена: {{ el.price }} Руб.</small>
+                                <small class="text-body-secondary">Цена: {{ el.price }}</small>
                             </div>
                         </div>
                     </div>
                 </div>               
                 {% endfor %}
-                
             </div>
         </div>
     </main>
-
-    <footer class="container my-md-5 pt-md-5 border-top">
-        <div class="row">
-          <div class="col-12 col-md">
-            <img class="mb-2" src="{{ url_for ('static', filename='images/icons/MUIV.png')}}" alt="" width="24" height="19">
-            <small class="d-block mb-3 text-body-secondary">2024 © МУИВ. Все права защищены.</small>
-          </div>
-          <div class="col-6 col-md">
-            <h5>Контакты</h5>
-            <ul class="list-unstyled text-small">
-              <li class="mb-1"><a href="https://yandex.ru/maps/-/CDUOzQIO" rel="nofollow" class="footer_link_icon link_address">115432, Москва, 
-                <br>2-й Кожуховский проезд, 
-                <br>д. 12, стр. 1</a></li>
-
-            </ul>
-          </div>
-          <div class="col-6 col-md">
-            <h5>Часы работы</h5>
-            <ul class="list-unstyled text-small">
-                <span>
-                    <i>Пн-Чт.:</i>
-                     09:30-18:15
-                </span>
-                <span>
-                    <br><i>Пт.:</i> 09:30-17:00
-                </span>
-            </ul>
-          </div>
-        </div>
-      </footer>
+    
 </body>
 </html>

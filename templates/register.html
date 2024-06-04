@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация - Столовая Университета</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styleregister.css') }}">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Регистрация</h2>
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                <label for="username">{{ form.username.label }}</label>
+                {{ form.username(class_="form-control", size=32) }}
+                {% for error in form.username.errors %}
+                    <div class="text-danger">[{{ error }}]</div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <label for="email">{{ form.email.label }}</label>
+                {{ form.email(class_="form-control", size=32) }}
+                {% for error in form.email.errors %}
+                    <div class="text-danger">[{{ error }}]</div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <label for="password">{{ form.password.label }}</label>
+                {{ form.password(class_="form-control", size=32) }}
+                {% for error in form.password.errors %}
+                    <div class="text-danger">[{{ error }}]</div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <label for="confirm_password">{{ form.confirm_password.label }}</label>
+                {{ form.confirm_password(class_="form-control", size=32) }}
+                {% for error in form.confirm_password.errors %}
+                    <div class="text-danger">[{{ error }}]</div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.submit(class_="btn btn-primary") }}
+            </div>
+            <div class="form-group">
+                <a href="{{ url_for('login') }}" class="btn btn-secondary">Назад на страницу входа</a>
+                <a href="{{ url_for('menu') }}" class="btn btn-secondary">На главную страницу</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

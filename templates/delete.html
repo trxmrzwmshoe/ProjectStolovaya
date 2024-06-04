@@ -18,14 +18,12 @@
 
             <nav class="header__nav">
                 <ul class="header__list">
-                    <li><a href="/index">ГЛАВНАЯ</a></li>
-                    <li><a href="/menu">ВСЕ МЕНЮ</a></li>
-                    <li><a href="#!">ВЫПЕЧКА</a></li>
-                    <li><a href="/first-meal">ПЕРВЫЕ БЛЮДА</a></li>
-                    <li><a href="#!">САЛАТЫ</a></li>
-                    <li><a href="#!">ВТОРЫЕ БЛЮДА</a></li>
-                    <li><a href="#!">ДЕСЕРТЫ</a></li>
-                    <li><a href="#!">НАПИТКИ</a></li>
+                    <li><a href="/menu">Все меню</a></li>
+                    <li><a href="/category/bakery">ВЫПЕЧКА</a></li>
+                    <li><a href="/category/first-dishes">ПЕРВЫЕ БЛЮДА</a></li>
+                    <li><a href="/category/salads">САЛАТЫ</a></li>
+                    <li><a href="/category/second-dishes">ВТОРЫЕ БЛЮДА</a></li>
+                    <li><a href="/category/drinks">НАПИТКИ</a></li>
                 </ul>
             </nav>
 
@@ -33,20 +31,6 @@
             <a href="/sign-in" class="image-btn btn-danger"></a>
         </div>
     </header>
-    <!-- <main>
-        <div class="container">
-            <h1>Удалить блюдо из меню</h1><br>
-            <form action="/remove_dish" method="POST">
-                {% for dish in menu %}
-                    <div class="dish">
-                        <p class="my-0 font-weight-normal">{{ dish.title }}</p>
-                        <img src="{{ url_for('static', filename='images/' + dish.image)}}" alt="dish.name">
-                        <button type="submit" name="dish_id" value="{{ dish.id }}">Удалить</button>
-                    </div>
-                {% endfor %}
-            </form>
-        </div>
-    </main>-->
     <main class="main">
         <div class="container">
             <h1>Удалить блюдо из меню</h1><br>

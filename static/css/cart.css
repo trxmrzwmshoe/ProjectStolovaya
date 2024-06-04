@@ -57,11 +57,11 @@ h1, h2, h4, h5, h6 {
     justify-content: center;
     cursor: pointer;
 
-    width: 100px;
-    height: 20px;
+    width: 200px;
+    height: 30px;
 
     font-weight: 300;
-    font-size: 10px;
+    font-size: 13px;
     text-transform: uppercase;
 
     background: #c21631;
@@ -104,13 +104,7 @@ h1, h2, h4, h5, h6 {
     align-items: center;
 }
 
-.header__logo {
 
-}
-
-.header__nav {
-
-}
 
 .header__list {
     display: flex;
@@ -135,37 +129,24 @@ h1, h2, h4, h5, h6 {
 }
 
 .main {
-
+    padding: 20px 0;
 }
 
-/* Столбцы с блюдами */
 
-#itemImage {
-	height: 200px;
-	width: 150px;
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+}
+.cart-item:last-child {
+    border-bottom: none;
 }
 
-.display {
-	margin-top: 20px;
-	margin-left: 20px;
-	margin-right: 20px;
-	margin-bottom: 20px;
+img {
+    max-width: 200px;
+    height: auto;
+    border-radius: 10px;
+    margin-top: 1rem;
 }
-
-table {
-	border-spacing: 20px;
-}
-
-#productName {
-	text-align: center;
-	font-weight: bold;
-}
-
-#productPrice {
-	text-align: center;
-}
-
-.displayCategory ul li {
-	font-size: 20px;
-}
-

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизация - Столовая Университета</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/stylelogin.css') }}">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <div class="login-form">
+        <form method="POST" action="">
+            <img src="{{ url_for('static', filename='images/icons/logo.png') }}" alt="" style="align-items: center;">
+            {{ form.hidden_tag() }}
+            <h2 class="text-center">Авторизация</h2>
+            <div class="form-group">
+                {{ form.email.label(class_="form-label") }}
+                {{ form.email(class_="form-control", size=32, placeholder="Введите ваш email") }}
+                {% for error in form.email.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.password.label(class_="form-label") }}
+                {{ form.password(class_="form-control", size=32, placeholder="Введите ваш пароль") }}
+                {% for error in form.password.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.submit(class_="btn btn-danger btn-block") }}
+            </div>
+        </form>
+        <p class="text-center">У вас нет учетной записи? <a href="{{ url_for('register') }}">Зарегистрируйтесь</a></p>
+    </div>
+</body>
+</html>

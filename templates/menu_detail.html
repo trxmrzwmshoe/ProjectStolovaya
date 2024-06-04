@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru"> 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ dish.title }}</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/stylemenu_detail.css') }}">
     <link rel="icon" href="{{ url_for ('static', filename='images/icons/MUIV.png')}}" alt="" class="head__logo" type="image/x-icon">
 </head>
 <body>
@@ -13,56 +13,70 @@
         <div class="container">
             <img src="{{ url_for('static', filename='images/icons/logo.png') }}" alt="" class="header__logo"> 
 
-        <!-- ul - ненумерованный список ( unordered list )-->
-        <!-- li - пункт списка ( list item )-->
+        
 
-            <nav class="header__nav">
-                <ul class="header__list">
-                    <li><a href="/index">ГЛАВНАЯ</a></li>
-                    <li><a href="#!">ВЫПЕЧКА</a></li>
-                    <li><a href="/first-meal">ПЕРВЫЕ БЛЮДА</a></li>
-                    <li><a href="#!">САЛАТЫ</a></li>
-                    <li><a href="#!">ВТОРЫЕ БЛЮДА</a></li>
-                    <li><a href="#!">ДЕСЕРТЫ</a></li>
-                    <li><a href="#!">НАПИТКИ</a></li>
-                </ul>
-            </nav>
+        <nav class="header__nav">
+            <ul class="header__list">
+                
+                <li><a href="/menu">Все меню</a></li>
+                <li><a href="/category/bakery">ВЫПЕЧКА</a></li>
+                <li><a href="/category/first-dishes">ПЕРВЫЕ БЛЮДА</a></li>
+                <li><a href="/category/salads">САЛАТЫ</a></li>
+                <li><a href="/category/second-dishes">ВТОРЫЕ БЛЮДА</a></li>
+                <li><a href="/category/drinks">НАПИТКИ</a></li>
+            </ul>
+        </nav>
 
-            <a href="#!" class="btn btn-danger">Корзина</a> 
-            <a href="#!" class="image-btn btn-danger"></a>
+            <a href="/cart" class="btn btn-danger">Корзина</a> 
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('profile', username=current_user.username) }}" class="image-btn btn-danger"></a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="image-btn btn-danger"></a>
+            {% endif %}
         </div>
     </header>
     <main class="main">
         <div class="container">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                <div class="col">
-                    <div class="card shadow-sm">
-                        <h1>{{ dish.title }}</h1>
-                        <img src="{{ url_for('static', filename='images/' + dish.image)}}" alt="dish.name"><br><br>
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <p>{{ dish.text }}</p>
-                                <small class="text-body-secondary">Цена: {{ dish.price }}</small>
-                                <div class="btn-group">
-                                    <a href="/menu" class="btn btn-danger">Назад к меню</a>
+            <h1>{{ dish.title }}</h1>
+            <br>
+            <div class="row">
+                <div class="col-3">
+                    <img src="{{ url_for('static', filename='images/' + dish.image) }}" alt="{{ dish.title }}">
+                    <div class="row">
+                        <div class="col">
+                            <form action="{{ url_for('add_to_cart', dish_id=dish.id) }}" method="POST">
+                                <div class="form-group">
+                                    <label for="quantity">Количество:</label>
+                                    <input type="number" name="quantity" id="quantity" class="form-control" value="1" min="1">
+                                    <div class="col">
+                                        <button type="submit" class="btn1 btn-danger">Добавить в корзину</button>
+                                    </div>
+                                    
+                                    
                                 </div>
-                            </div>
+                                
+                            </form>
                         </div>
                     </div>
-                </div>               
-                
+                </div>
+                <div class="col-6">
+                    <ul>
+                        <li><b>Состав: </b>{{ dish.text }}</li>
+                        <br>
+                        <li><b>Жиры: </b>{{ dish.fats }}</li>
+                        <br>
+                        <li><b>Белки: </b>{{ dish.proteins }}</li>
+                        <br>
+                        <li><b>Углеводы: </b>{{ dish.carbs }}</li>
+                        <br>
+                        <li><b>Калории: </b>{{ dish.calories }}</li>
+                        <br>
+                        <li><b>Цена: </b>{{ dish.price }} Руб.</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </main>
-    <!-- <div class="container">
-        <h1>{{ dish.title }}</h1>
-        <div class="alert alert-info">
-            <img src="{{ url_for('static', filename='images/' + dish.image)}}" alt="dish.name"><br><br>
-            <p>{{ dish.text }}</p>
-            <a href="/menu/{{ dish.id }}/delete" class="btn btn-danger">Delete</a>
-        </div> 
-    </div>-->
-
     <footer class="container my-md-5 pt-md-5 border-top">
         <div class="row">
           <div class="col-12 col-md">
@@ -94,3 +108,58 @@
       </footer>
 </body>
 </html>
+<!--<main class="main">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <h1>{{ dish.title }}</h1>
+                        <img src="{{ url_for('static', filename='images/' + dish.image)}}" alt="dish.name"><br><br>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p>{{ dish.text }}</p>
+                                <small class="text-body-secondary">Цена: {{ dish.price }}</small>
+                                <div class="btn-group">
+                                    <a href="/menu" class="btn btn-danger">Назад к меню</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>               
+                
+            </div>
+        </div>
+    </main>-->
+    <!-- <div class="container">
+        <h1>{{ dish.title }}</h1>
+        <div class="alert alert-info">
+            <img src="{{ url_for('static', filename='images/' + dish.image)}}" alt="dish.name"><br><br>
+            <p>{{ dish.text }}</p>
+            <a href="/menu/{{ dish.id }}/delete" class="btn btn-danger">Delete</a>
+        </div> 
+    </div>-->
+<!-- <main class="main"> 
+        <div class="container">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <h1>{{ dish.title }}</h1>
+                        <img src="{{ url_for('static', filename='images/' + dish.image) }}" alt="{{ dish.title }}"><br><br>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p>{{ dish.text }}</p>
+                                <small class="text-body-secondary">Цена: {{ dish.price }} Руб.</small>
+                                <form action="{{ url_for('add_to_cart', dish_id=dish.id) }}" method="POST">
+                                    <button type="submit">Добавить в корзину</button>
+                                </form>
+                                <div class="btn-group">
+                                    <a href="{{ url_for('menu') }}" class="btn btn-danger">Назад в меню</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>               
+                
+            </div>
+        </div>
+    </main>-->
