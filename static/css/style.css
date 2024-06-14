@@ -57,13 +57,13 @@ h1, h2, h4, h5, h6 {
     justify-content: center;
     cursor: pointer;
 
-    width: 100px;
-    height: 20px;
+    width: 165px;
+    height: 50px;
 
-    font-weight: 300;
-    font-size: 10px;
+    font-weight: 500;
+    font-size: 16px;
     text-transform: uppercase;
-
+    
     background: #c21631;
     border-radius: 10px;
 
@@ -86,7 +86,7 @@ h1, h2, h4, h5, h6 {
 
 .image-btn:hover {
     opacity: 0.8;
-} 
+}
 
 .image-btn:active {
     transform: scale(0.95);
@@ -98,18 +98,18 @@ h1, h2, h4, h5, h6 {
     padding: 25px 0px; /*второе значение 175*/
 }
 
+.header__logo {
+
+}
+
 .header .container {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.header__logo {
-
-}
-
 .header__nav {
-
+    
 }
 
 .header__list {
@@ -135,37 +135,171 @@ h1, h2, h4, h5, h6 {
 }
 
 .main {
-
+    padding: 20px 0;
 }
 
-/* Столбцы с блюдами */
 
-#itemImage {
-	height: 200px;
-	width: 150px;
+
+
+@media (max-width: 500px) { 
+    .header .container {
+        
+        top: 0;
+        width: 100%;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .header__list {
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+    }
+    .header__nav{
+        list-style: none;
+    }
+    .btn1 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        width: 140px;
+        height: 45px;
+
+        font-weight: 300;
+        font-size: 14px;
+        text-transform: uppercase;
+
+        background: #c21631;
+        border-radius: 10px;
+
+        color: white;
+    }
 }
 
-.display {
-	margin-top: 20px;
-	margin-left: 20px;
-	margin-right: 20px;
-	margin-bottom: 20px;
+@media (max-width: 450px) { 
+    .header .container {
+        
+        top: 0;
+        width: 100%;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .header__list {
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+    }
+    .header__nav{
+        list-style: none;
+    }
+    .btn1 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        width: 130px;
+        height: 40px;
+
+        font-weight: 300;
+        font-size: 12px;
+        text-transform: uppercase;
+
+        background: #c21631;
+        border-radius: 10px;
+
+        color: white;
+    }
 }
 
-table {
-	border-spacing: 20px;
-}
+@media (max-width: 410px) { 
+    .header .container {
+        
+        top: 0;
+        width: 100%;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .header__list {
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+    }
+    .header__nav{
+        list-style: none;
+    }
+    .btn1 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
 
-#productName {
-	text-align: center;
-	font-weight: bold;
-}
+        width: 110px;
+        height: 35px;
 
-#productPrice {
-	text-align: center;
-}
+        font-weight: 300;
+        font-size: 12px;
+        text-transform: uppercase;
 
-.displayCategory ul li {
-	font-size: 20px;
-}
+        background: #c21631;
+        border-radius: 10px;
 
+        color: white;
+    }
+}
+@media (max-width: 767px) {
+    .header__nav {
+        display: none;
+    }
+    .sidebar {
+        display: block;
+        width: 250px;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: -250px;
+        background: #c21631;
+        overflow-x: hidden;
+        transition: 0.5s;
+        z-index: 1000;
+        padding-top: 60px;
+    }
+    .sidebar a {
+        padding: 10px 15px;
+        text-decoration: none;
+        font-size: 18px;
+        color: white;
+        display: block;
+        transition: 0.3s;
+    }
+    .sidebar a:hover {
+        color: #f1f1f1;
+    }
+    .sidebar .closebtn {
+        position: absolute;
+        top: 0;
+        right: 25px;
+        font-size: 36px;
+        margin-left: 50px;
+    }
+    .sidebar.open {
+        left: 0;
+    }
+    .openbtn {
+        font-size: 20px;
+        cursor: pointer;
+        background-color: #c21631;
+        color: white;
+        border: none;
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        z-index: 1001;
+    }
+}
+@media (min-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+    .openbtn {
+        display: none;
+    }
+}

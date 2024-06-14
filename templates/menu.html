@@ -6,27 +6,23 @@
     <title>MUIV Столовая</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="icon" href="{{ url_for ('static', filename='images/icons/MUIV.png')}}" alt="" class="head__logo" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='images/icons/MUIV.png')}}" alt="" class="head__logo" type="image/x-icon">
 </head>
 <body>
     <header class="header">
         <div class="container">
             <img src="{{ url_for('static', filename='images/icons/logo.png') }}" alt="" class="header__logo"> 
-
-        <!-- ul - ненумерованный список ( unordered list )-->
-        <!-- li - пункт списка ( list item )-->
-
-        <nav class="header__nav">
-            <ul class="header__list">
-                <li><a href="/menu">Все меню</a></li>
-                <li><a href="/category/bakery">ВЫПЕЧКА</a></li>
-                <li><a href="/category/first-dishes">ПЕРВЫЕ БЛЮДА</a></li>
-                <li><a href="/category/salads">САЛАТЫ</a></li>
-                <li><a href="/category/second-dishes">ВТОРЫЕ БЛЮДА</a></li>
-                <li><a href="/category/drinks">НАПИТКИ</a></li>
-            </ul>
-        </nav>
-
+            <button class="openbtn" onclick="toggleSidebar()">☰</button>
+            <nav class="header__nav">
+                <ul class="header__list">
+                    <li><a href="/menu">Все меню</a></li>
+                    <li><a href="/category/bakery">ВЫПЕЧКА</a></li>
+                    <li><a href="/category/first-dishes">ПЕРВЫЕ БЛЮДА</a></li>
+                    <li><a href="/category/salads">САЛАТЫ</a></li>
+                    <li><a href="/category/second-dishes">ВТОРЫЕ БЛЮДА</a></li>
+                    <li><a href="/category/drinks">НАПИТКИ</a></li>
+                </ul>
+            </nav>
             <a href="/cart" class="btn btn-danger">Корзина</a> 
             {% if current_user.is_authenticated %}
                 <a href="{{ url_for('profile', username=current_user.username) }}" class="image-btn btn-danger"></a>
@@ -35,6 +31,15 @@
             {% endif %}
         </div>
     </header>
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="toggleSidebar()">×</a>
+        <a href="/menu">Все меню</a>
+        <a href="/category/bakery">ВЫПЕЧКА</a>
+        <a href="/category/first-dishes">ПЕРВЫЕ БЛЮДА</a>
+        <a href="/category/salads">САЛАТЫ</a>
+        <a href="/category/second-dishes">ВТОРЫЕ БЛЮДА</a>
+        <a href="/category/drinks">НАПИТКИ</a>
+    </div>
     <main class="main">
         <div class="container">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
@@ -43,50 +48,56 @@
                     <div class="card shadow-sm">
                         <img src="{{ url_for('static', filename='images/' + el.image)}}" alt="el.name">
                         <div class="card-body">
-                            <p class="my-0 font-weight-normal">{{ el.title }}</p>
+                            <p class="card-text">{{ el.title }}</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <a href="/menu/{{ el.id }}" class="btn btn-danger">Детальнее</a>
+                                    <a href="/menu/{{ el.id }}" class="btn1 btn-danger">Детальнее</a>
                                 </div>
-                                <small class="text-body-secondary">Цена: {{ el.price }} Руб.</small>
+                                <form action="{{ url_for('add_to_cart', dish_id=el.id) }}" method="POST">
+                                    <button type="submit" class="btn1 btn-danger">Добавить в корзину</button>
+                                </form>
+                                <small class="text-body-secondary">Цена: {{ "%.2f" % el.price }} ₽</small>
                             </div>
                         </div>
                     </div>
                 </div>               
                 {% endfor %}
-                
             </div>
         </div>
     </main>
-
     <footer class="container my-md-5 pt-md-5 border-top">
         <div class="row">
-          <div class="col-12 col-md">
-            <img class="mb-2" src="{{ url_for ('static', filename='images/icons/MUIV.png')}}" alt="" width="24" height="19">
-            <small class="d-block mb-3 text-body-secondary">2024 © МУИВ. Все права защищены.</small>
-          </div>
-          <div class="col-6 col-md">
-            <h5>Контакты</h5>
-            <ul class="list-unstyled text-small">
-              <li class="mb-1"><a href="https://yandex.ru/maps/-/CDUOzQIO" rel="nofollow" class="footer_link_icon link_address">115432, Москва, 
-                <br>2-й Кожуховский проезд, 
-                <br>д. 12, стр. 1</a></li>
-
-            </ul>
-          </div>
-          <div class="col-6 col-md">
-            <h5>Часы работы</h5>
-            <ul class="list-unstyled text-small">
-                <span>
-                    <i>Пн-Чт.:</i>
-                     09:30-18:15
-                </span>
-                <span>
-                    <br><i>Пт.:</i> 09:30-17:00
-                </span>
-            </ul>
-          </div>
+            <div class="col-12 col-md">
+                <img class="mb-2" src="{{ url_for ('static', filename='images/icons/MUIV.png')}}" alt="" width="24" height="19">
+                <small class="d-block mb-3 text-body-secondary">2024 © МУИВ. Все права защищены.</small>
+            </div>
+            <div class="col-6 col-md">
+                <h5>Контакты</h5>
+                <ul class="list-unstyled text-small">
+                    <li class="mb-1"><a href="https://yandex.ru/maps/-/CDUOzQIO" rel="nofollow" class="footer_link_icon link_address">115432, Москва, 
+                    <br>2-й Кожуховский проезд, 
+                    <br>д. 12, стр. 1</a></li>
+                </ul>
+            </div>
+            <div class="col-6 col-md">
+                <h5>Часы работы</h5>
+                <ul class="list-unstyled text-small">
+                    <span>
+                        <i>Пн-Чт.:</i>
+                        09:30-18:15
+                    </span>
+                    <span>
+                        <br><i>Пт.:</i> 09:30-17:00
+                    </span>
+                </ul>
+            </div>
         </div>
-      </footer>
+    </footer>
+    <script>
+        function toggleSidebar() {
+            document.getElementById("mySidebar").classList.toggle('open');
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

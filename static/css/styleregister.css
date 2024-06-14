@@ -52,3 +52,19 @@ input[type="submit"]:hover {
     color: red;
     font-size: 0.9em;
 }
+@media (max-width: 500px) { 
+    .header .container {
+        
+        top: 0;
+        width: 100%;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .header__list {
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+    }
+    .header__nav{
+        list-style: none;
+    }
+}

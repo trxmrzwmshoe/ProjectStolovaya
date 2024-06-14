@@ -12,21 +12,17 @@
     <header class="header">
         <div class="container">
             <img src="{{ url_for('static', filename='images/icons/logo.png') }}" alt="" class="header__logo"> 
-
-        <!-- ul - ненумерованный список ( unordered list )-->
-        <!-- li - пункт списка ( list item )-->
-
-        <nav class="header__nav">
-            <ul class="header__list">
-                <li><a href="/menu">Все меню</a></li>
-                <li><a href="/category/bakery">ВЫПЕЧКА</a></li>
-                <li><a href="/category/first-dishes">ПЕРВЫЕ БЛЮДА</a></li>
-                <li><a href="/category/salads">САЛАТЫ</a></li>
-                <li><a href="/category/second-dishes">ВТОРЫЕ БЛЮДА</a></li>
-                <li><a href="/category/drinks">НАПИТКИ</a></li>
-            </ul>
-        </nav>
-
+            <button class="openbtn" onclick="toggleSidebar()">☰</button>
+            <nav class="header__nav">
+                <ul class="header__list">
+                    <li><a href="/menu">Все меню</a></li>
+                    <li><a href="/category/bakery">ВЫПЕЧКА</a></li>
+                    <li><a href="/category/first-dishes">ПЕРВЫЕ БЛЮДА</a></li>
+                    <li><a href="/category/salads">САЛАТЫ</a></li>
+                    <li><a href="/category/second-dishes">ВТОРЫЕ БЛЮДА</a></li>
+                    <li><a href="/category/drinks">НАПИТКИ</a></li>
+                </ul>
+            </nav>
             <a href="/cart" class="btn btn-danger">Корзина</a> 
             {% if current_user.is_authenticated %}
                 <a href="{{ url_for('profile', username=current_user.username) }}" class="image-btn btn-danger"></a>
@@ -35,6 +31,15 @@
             {% endif %}
         </div>
     </header>
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="toggleSidebar()">×</a>
+        <a href="/menu">Все меню</a>
+        <a href="/category/bakery">ВЫПЕЧКА</a>
+        <a href="/category/first-dishes">ПЕРВЫЕ БЛЮДА</a>
+        <a href="/category/salads">САЛАТЫ</a>
+        <a href="/category/second-dishes">ВТОРЫЕ БЛЮДА</a>
+        <a href="/category/drinks">НАПИТКИ</a>
+    </div>
     <main class="main">
         <div class="container">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
@@ -46,10 +51,16 @@
                             <p class="my-0 font-weight-normal">{{ el.title }}</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <a href="/menu/{{ el.id }}" class="btn btn-danger">Детальнее</a>
+                                    <a href="/menu/{{ el.id }}" class="btn1 btn-danger">Детальнее</a>
                                     
                                 </div>
-                                <small class="text-body-secondary">Цена: {{ el.price }}</small>
+                                
+                                <form action="{{ url_for('add_to_cart', dish_id=el.id) }}" method="POST">
+                                    
+                                    <button type="submit" class="btn1 btn-danger">Добавить в корзину</button>
+                
+                                </form>
+                                <small class="text-body-secondary">Цена: {{ "%.2f" % el.price }} ₽</small>
                             </div>
                         </div>
                     </div>
@@ -58,6 +69,11 @@
             </div>
         </div>
     </main>
-    
+    <script>
+        function toggleSidebar() {
+            document.getElementById("mySidebar").classList.toggle('open');
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

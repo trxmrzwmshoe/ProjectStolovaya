@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Staff</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .details {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Orders</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Пользователь</th>
+                <th>Общая сумма</th>
+                <th>Дата заказа</th>
+                <th>Статус</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>
+                    <button onclick="toggleDetails({{ order.id }})">▼</button>
+                    {{ order.id }}
+                </td>
+                <td>{{ order.user.username }}</td>
+                <td>{{ "%.2f" % order.total_price }} ₽</td>
+                <td>{{ order.order_date }}</td>
+                <td>{{ order.status }}</td>
+                <td>
+                    <form action="{{ url_for('update_order_status', order_id=order.id) }}" method="POST">
+                        <select name="status">
+                            <option value="В ожидании" {% if order.status == 'В ожидании' %}selected{% endif %}>В ожидании</option>
+                            <option value="Выполняется" {% if order.status == 'Выполняется' %}selected{% endif %}>Выполняется</option>
+                            <option value="Отправлен" {% if order.status == 'Отправлен' %}selected{% endif %}>Отправлен</option>
+                            <option value="Выполнен" {% if order.status == 'Выполнен' %}selected{% endif %}>Выполнен</option>
+                            <option value="Отменен" {% if order.status == 'Отменен' %}selected{% endif %}>Отменен</option>
+                        </select>
+                        <button type="submit">Обновить</button>
+                    </form>
+                </td>
+            </tr>
+            <tr id="details-{{ order.id }}" class="details">
+                <td colspan="6">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Блюдо</th>
+                                <th>Количество</th>
+                                <th>Цена</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for detail, dish in order_details[order.id] %}
+                            <tr>
+                                <td>{{ dish.title }}</td>
+                                <td>(x{{ detail.quantity }})</td>
+                                <td>{{ dish.price * detail.quantity }} ₽.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script>
+        function toggleDetails(orderId) {
+            var detailsRow = document.getElementById('details-' + orderId);
+            if (detailsRow.style.display === 'none') {
+                detailsRow.style.display = 'table-row';
+            } else {
+                detailsRow.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

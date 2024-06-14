@@ -10,8 +10,9 @@
 </head>
 <body>
     <header class="header">
-        <div class="container d-flex align-items-center justify-content-between">
-            <img src="{{ url_for('static', filename='images/icons/logo.png') }}" alt="" class="header__logo">
+        <div class="container">
+            <img src="{{ url_for('static', filename='images/icons/logo.png') }}" alt="" class="header__logo"> 
+            <button class="openbtn" onclick="toggleSidebar()">☰</button>
             <nav class="header__nav">
                 <ul class="header__list">
                     <li><a href="/menu">Все меню</a></li>
@@ -22,7 +23,7 @@
                     <li><a href="/category/drinks">НАПИТКИ</a></li>
                 </ul>
             </nav>
-            <a href="/cart" class="btn btn-danger">Корзина</a>
+            <a href="/cart" class="btn btn-danger">Корзина</a> 
             {% if current_user.is_authenticated %}
                 <a href="{{ url_for('profile', username=current_user.username) }}" class="image-btn btn-danger"></a>
             {% else %}
@@ -30,6 +31,15 @@
             {% endif %}
         </div>
     </header>
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="toggleSidebar()">×</a>
+        <a href="/menu">Все меню</a>
+        <a href="/category/bakery">ВЫПЕЧКА</a>
+        <a href="/category/first-dishes">ПЕРВЫЕ БЛЮДА</a>
+        <a href="/category/salads">САЛАТЫ</a>
+        <a href="/category/second-dishes">ВТОРЫЕ БЛЮДА</a>
+        <a href="/category/drinks">НАПИТКИ</a>
+    </div>
     <main class="main">
         <div class="container">
             <h1 class="mb-4">Ваша корзина</h1>
@@ -44,12 +54,12 @@
                                     <ul>
                                         <li><b>Количество: </b>{{ dish.quantity }}</li>
                                         
-                                        <li><b>Цена: </b>{{ dish.price }} Руб.</li>
+                                        <li><b>Цена: </b>{{ "%.2f" % dish.price }}₽</li>
                                     </ul>
                                 </div>
                             </div>
                             <form action="{{ url_for('update_cart', dish_id=dish.id) }}" method="POST">
-                                <input type="number" name="quantity" value="{{ dish.quantity }}" min="1">
+                                <input type="number" name="quantity" value="{{ dish.quantity }}" min="1" class="quantity-input">
                                 <button type="submit" class="btn1 btn-danger">Обновить</button>
                                 <button formaction="{{ url_for('remove_from_cart', dish_id=dish.id) }}" class="btn1 btn-danger">Удалить</button>
                             </form>
@@ -57,7 +67,7 @@
                     {% endfor %}
                 </ul>
                 <div class="d-flex justify-content-between align-items-center">
-                    <p class="mb-0"><strong>Общая сумма: {{ total_price }} Руб.</strong></p>
+                    <p class="mb-0"><strong>Общая сумма: {{ "%.2f" % total_price }}₽</strong></p>
                     <a href="{{ url_for('checkout') }}" class="btn btn-danger">Оформить заказ</a>
                 </div>
             {% else %}
@@ -65,5 +75,11 @@
             {% endif %}
         </div>
     </main>
+    <script>
+        function toggleSidebar() {
+            document.getElementById("mySidebar").classList.toggle('open');
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

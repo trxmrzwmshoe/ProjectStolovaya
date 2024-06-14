@@ -7,8 +7,10 @@ from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from functools import wraps
-from datetime import date
-from datetime import datetime
+from datetime import date, datetime
+from sqlalchemy.types import Enum
+from wtforms import StringField, DecimalField, IntegerField, TextAreaField, FileField, SelectField, SubmitField, FloatField
+from wtforms.validators import DataRequired, NumberRange, Length, Regexp
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
@@ -38,13 +40,13 @@ class Dish(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), nullable=False)
     image = db.Column(db.String(100))
-    price = db.Column(db.Float, nullable=False)  
+    price = db.Column(db.Float, nullable=False)
     text = db.Column(db.Text, nullable=False)
     category = db.Column(db.String(50), nullable=False)
-    fats = db.Column(db.String(50), nullable=False)  
-    proteins = db.Column(db.String(50), nullable=False)  
-    carbs = db.Column(db.String(50), nullable=False)  
-    calories = db.Column(db.String(50), nullable=False)  
+    fats = db.Column(db.Integer, nullable=False)
+    proteins = db.Column(db.Integer, nullable=False) 
+    carbs = db.Column(db.Integer, nullable=False)  
+    calories = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
         return '<Dish %r>' % self.id
@@ -55,15 +57,23 @@ class Cart(db.Model):
     dish_id = db.Column(db.Integer, db.ForeignKey('dish.id'), nullable=False)
     quantity = db.Column(db.Integer, default=1)
 
+class OrderDetail(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False)
+    dish_id = db.Column(db.Integer, db.ForeignKey('dish.id'), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref=db.backref('orders', lazy=True))
     total_price = db.Column(db.Float, nullable=False)
     order_date = db.Column(db.Date, nullable=False)
-    phone = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(150), nullable=False)
     pickup_location = db.Column(db.String(100), nullable=False, default='Студенческая столовая')
-    status = db.Column(db.String(20), default='Pending')
+    status = db.Column(db.Enum('В ожидании', 'Выполняется', 'Отправлен', 'Выполнен', 'Отменен', name='order_status'), default='В ожидании')
+    details = db.relationship('OrderDetail', backref='order', lazy=True)
+
 
     def __repr__(self):
         return '<Order %r>' % self.id
@@ -78,12 +88,12 @@ class RegistrationForm(FlaskForm):
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
         if user:
-            raise ValidationError('That username is taken. Please choose a different one.')
+            raise ValidationError('Это имя занято. Пожалуйста, выберите другое.')
 
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
         if user:
-            raise ValidationError('That email is taken. Please choose a different one.')
+            raise ValidationError('Этот email занят. Пожалуйста, выберите другой.')
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired()])
@@ -102,13 +112,30 @@ class EditProfileForm(FlaskForm):
         if username.data != current_user.username:
             user = User.query.filter_by(username=username.data).first()
             if user:
-                raise ValidationError('That username is taken. Please choose a different one.')
+                raise ValidationError('Это имя занято. Пожалуйста, выберите другое.')
+
+class AddDishForm(FlaskForm):
+    title = StringField('Название', validators=[DataRequired(), Length(max=50)])
+    image = FileField('Изображение', validators=[DataRequired()])
+    price = FloatField('Цена', validators=[DataRequired(message="Пожалуйста, введите числовое значение для цены.")])
+    text = TextAreaField('Описание', validators=[DataRequired()])
+    category = SelectField('Категория', choices=[
+        ("bakery", "Выпечка"), 
+        ("first-dishes", "Первые блюда"), 
+        ("second-dishes", "Вторые блюда"), 
+        ("salads", "Салаты"), 
+        ("drinks", "Напитки")
+    ], validators=[DataRequired()])
+    fats = IntegerField('Жиры', validators=[DataRequired(message="Пожалуйста, введите числовое значение для жиров.")])
+    proteins = IntegerField('Белки', validators=[DataRequired(message="Пожалуйста, введите числовое значение для белков.")])
+    carbs = IntegerField('Углеводы', validators=[DataRequired(message="Пожалуйста, введите числовое значение для углеводов.")])
+    calories = IntegerField('Калории', validators=[DataRequired(message="Пожалуйста, введите числовое значение для калорий.")])
+    submit = SubmitField('Добавить блюдо')
 
 with app.app_context():
     db.create_all()
 
 menu_categories = ["bakery", "first-dishes", "second-dishes", "salads", "drinks"]
-
 
 @app.route('/category/<category>')
 def category(category):
@@ -133,22 +160,37 @@ def dish_del():
 
 @app.route('/add', methods=['POST', 'GET'])
 def add():
-    if request.method == "POST":
-        title = request.form['title']
-        image = request.files['image']
-        price = request.form['price']
-        text = request.form['text']
-        category = request.form['category']
-        fats = request.form['fats']
-        proteins = request.form['proteins']
-        carbs = request.form['carbs']
-        calories = request.form['calories']
+    form = AddDishForm()
+    if form.validate_on_submit():
+        title = form.title.data
+        image = form.image.data
+        price = form.price.data
+        text = form.text.data
+        category = form.category.data
+        fats = form.fats.data
+        proteins = form.proteins.data
+        carbs = form.carbs.data
+        calories = form.calories.data
 
-        dish = Dish(title=title, image=image.filename, price=price, text=text, category=category, fats=fats, proteins=proteins, carbs=carbs, calories=calories)
+        image_path = os.path.join('static/images', image.filename)
+        image.save(image_path)
+
+        dish = Dish(
+            title=title,
+            image=image.filename,
+            price=price,
+            text=text,
+            category=category,
+            fats=int(fats), 
+            proteins=int(proteins),  
+            carbs=int(carbs), 
+            calories=calories
+        )
         db.session.add(dish)
         db.session.commit()
+        flash('Блюдо добавлено в меню', 'success')
         return redirect(url_for('menu'))
-    return render_template('add.html', category=menu_categories)
+    return render_template('add.html', form=form, category=menu_categories)
 
 @app.route('/remove_dish', methods=['POST'])
 def remove_dish():
@@ -169,7 +211,7 @@ def register():
         user = User(username=form.username.data, email=form.email.data, password=hashed_password)
         db.session.add(user)
         db.session.commit()
-        flash('Your account has been created!', 'success')
+        flash('Ваш аккаунт был создан!', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
@@ -180,24 +222,24 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and check_password_hash(user.password, form.password.data):
             login_user(user, remember=True)
-            flash('You have been logged in!', 'success')
+            flash('Вы вошли в систему!', 'success')
             return redirect(url_for('menu'))
         else:
-            flash('Login Unsuccessful. Please check email and password', 'danger')
+            flash('Вход неуспешный. Пожалуйста, проверьте электронную почту и пароль', 'danger')
     return render_template('login.html', form=form)
 
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
-    flash('You have been logged out!', 'success')
+    flash('Вы вышли из системы!', 'success')
     return redirect(url_for('menu'))
 
 @app.route('/profile/<username>')
 @login_required
 def profile(username):
     if current_user.username != username:
-        flash('You cannot view other users\' profiles while logged in.', 'danger')
+        flash('Вы не можете просматривать профили других пользователей\' войдите в систему.', 'danger')
         return redirect(url_for('menu'))
     user = User.query.filter_by(username=username).first_or_404()
     return render_template('profile.html', user=user)
@@ -214,7 +256,7 @@ def edit_profile():
             hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256', salt_length=8)
             current_user.password = hashed_password
         db.session.commit()
-        flash('Your profile has been updated!', 'success')
+        flash('Ваш профиль был обновлен!', 'success')
         return redirect(url_for('profile', username=current_user.username))
     elif request.method == 'GET':
         form.username.data = current_user.username
@@ -226,17 +268,27 @@ def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not current_user.is_admin:
-            flash('You do not have permission to access this page.', 'danger')
+            flash('Вы не имеете доступа к этой странице.', 'danger')
             return redirect(url_for('menu'))
         return f(*args, **kwargs)
     return decorated_function
 
 @app.route('/admin')
-@login_required
-@admin_required
 def admin():
-    users = User.query.all()
-    return render_template('admin.html', users=users)
+    orders = Order.query.all()
+    return render_template('admin.html', orders=orders)
+
+@app.route('/update_order_status/<int:order_id>', methods=['POST'])
+def update_order_status(order_id):
+    new_status = request.form.get('status')
+    order = Order.query.get_or_404(order_id)
+    if new_status in ['В ожидании', 'Выполняется', 'Отправлен', 'Выполнен', 'Отменен']:
+        order.status = new_status
+        db.session.commit()
+        flash('Статус заказа обновлен!', 'success')
+    else:
+        flash('Неверный статус заказа!', 'danger')
+    return redirect(url_for('staff'))
 
 @app.route('/delete_user', methods=['POST'])
 @login_required
@@ -258,8 +310,8 @@ def cart():
         dish = Dish.query.get(item.dish_id)
         dish.quantity = item.quantity
         dishes.append(dish)
-        total_price += dish.price * item.quantity  # dish.price должен быть float
-    return render_template('cart.html', dishes=dishes, total_price=total_price)
+        total_price += float(dish.price) * item.quantity
+    return render_template('cart.html', dishes=dishes, total_price=round(total_price, 2))
 
 @app.route('/add_to_cart/<int:dish_id>', methods=['POST'])
 @login_required
@@ -282,7 +334,7 @@ def remove_from_cart(dish_id):
     if item:
         db.session.delete(item)
         db.session.commit()
-        flash('Dish removed from cart', 'success')
+        flash('Блюдо удалено из корзины', 'success')
     return redirect(url_for('cart'))
 
 @app.route('/update_cart/<int:dish_id>', methods=['POST'])
@@ -318,8 +370,6 @@ def remove_one_from_cart(dish_id):
 def checkout():
     if request.method == 'POST':
         order_date = date.today()
-        order_time = datetime.now().time()
-        phone = request.form['phone']
         email = current_user.email
         total_price = float(request.form['total_price'])
         pickup_location = 'Студенческая столовая'
@@ -328,15 +378,25 @@ def checkout():
             user_id=current_user.id, 
             total_price=total_price, 
             order_date=order_date, 
-            phone=phone, 
             email=email, 
             pickup_location=pickup_location,
-            status='Pending'
+            status='В ожидании'
         )
         db.session.add(new_order)
+        db.session.flush()  # Это нужно для получения ID нового заказа
+
+        cart_items = Cart.query.filter_by(user_id=current_user.id).all()
+        for item in cart_items:
+            order_detail = OrderDetail(
+                order_id=new_order.id,
+                dish_id=item.dish_id,
+                quantity=item.quantity
+            )
+            db.session.add(order_detail)
+        
         Cart.query.filter_by(user_id=current_user.id).delete()
         db.session.commit()
-        flash('Order placed successfully', 'success')
+        flash('Заказ успешно сделан', 'success')
         return redirect(url_for('menu'))
     else:
         cart_items = Cart.query.filter_by(user_id=current_user.id).all()
@@ -348,12 +408,19 @@ def checkout():
             dishes.append(dish)
             total_price += dish.price * item.quantity
         return render_template('checkout.html', dishes=dishes, total_price=total_price, email=current_user.email, order_date=date.today(), order_time=datetime.now().time())
-    
+
+
 @app.route('/my_orders')
 @login_required
 def my_orders():
     orders = Order.query.filter_by(user_id=current_user.id).all()
     return render_template('my_orders.html', orders=orders)
+
+@app.route('/staff')
+def staff():
+    orders = Order.query.all()
+    order_details = {order.id: db.session.query(OrderDetail, Dish).join(Dish).filter(OrderDetail.order_id == order.id).all() for order in orders}
+    return render_template('staff.html', orders=orders, order_details=order_details)
 
 if __name__ == '__main__':
     app.run(debug=True)
